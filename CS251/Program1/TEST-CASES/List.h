@@ -505,6 +505,81 @@ public:
      */
   void merge_with(List<T> &other)
   {
+    Node *curr = front,*tmp;
+    Node *curr_other=other.front,*tmp_other;
+    ///a is empty
+    if(front==nullptr && other.front!=nullptr){
+      front = other.front;
+      back = other.back;
+      other.front=other.back=nullptr;
+      return;
+    }
+    //b is empty
+    else if(front!=nullptr && other.front==nullptr)
+      return;
+  //single node
+  else if(front->next==nullptr){
+    if(front->data < other.front->data){
+      front->next = other.front;
+      back = other.back;
+      other.front=other.back=nullptr;
+      return;
+    }
+    else{
+      curr_other->next = curr;
+      front = curr_other;
+      other.front=other.back=nullptr;
+      return;
+    }
+
+  }
+  //both list non Empty
+  else{
+    tmp = curr->next;
+    tmp_other = curr_other->next;
+    if(front->data>other.front->data)
+      front = other.front;
+    else{
+      while(curr_other->data>tmp->data){
+        curr = tmp;
+        tmp = curr->next;
+        if(tmp->next==nullptr){
+          tmp->next = curr_other;
+          back = other.back;
+          other.front = other.back = nullptr;
+          return;
+        }
+        else{
+          curr->next = curr_other;
+          while(tmp->data>tmp_other->data){
+            curr_other = tmp_other;
+            tmp_other = tmp_other->next;
+            if(tmp_other->next==nullptr){
+              tmp_other->next = nullptr;
+              other.front = other.back = nullptr;
+              return;
+            }
+          }
+          curr_other->next = tmp;
+          curr = tmp;
+          tmp=curr->next;
+        }
+      }
+      if(other.back->data > back->data){
+        back = other.back;
+        other.back = other.front = nullptr;
+        return;
+      }
+      else{
+        other.back = other.front = nullptr;
+        return;
+      }
+      //End of initial while loop
+    }
+  }
+
+
+
   }
 
   /**
