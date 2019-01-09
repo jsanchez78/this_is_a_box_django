@@ -318,7 +318,30 @@ class bst {
      * Runtime:  O(h) where h is the tree height
      *
      **/
+     //Helper fucntion for num_range
+     //Test is t11.cpp
+     //Finish other num_range functions
+     int _num_range(bst_node *r,const T & min, const T & max){
+       //Empty
+       if(!r)
+         return 0;
+      //Single node
+      if(r->val==max && r->val==min)
+          return 1;
+       //Two children nodes
+       if(r->val >= min && r->val <= max){
+         return (1+_num_range(r->left,min,max)+_num_range(r->right,min,max));
+       }
+       //Right subtree only
+       else if(r->val < min)
+         return _num_range(r->right,min,max);
+       //Left subtee only
+       else
+         return _num_range(r->left,min,max);
+     }
     int num_range(const T & min, const T & max) {
+      bst_node *left = root->left;
+      bst_node *right = root->right;
       //Empty tree
       if(!root)
         return 0;
@@ -327,14 +350,15 @@ class bst {
         return 1;
       //Current node is in range
       if(root->val<=max && root->val>=min)
-        return (1+root->left.num_range(min,max)+root->right.num_range(min,max));
+        return (1+_num_range(left,min,max)+_num_range(right,min,max));
       //Right subrtee only
       else if(root->val < min)
-        return root->right.num_range(min,max);
+        return _num_range(right,min,max);
       //Left subrtee only
       else
-        return root->left.num_range(min,max);
+        return _num_range(left,min,max);
     }
+
 
     /*
      * function:     num_range_SLOW
