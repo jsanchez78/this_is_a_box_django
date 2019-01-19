@@ -17,6 +17,7 @@
  */
 
 
+
 template <typename T>
 class List
 {
@@ -31,14 +32,17 @@ private:
         : data{d}, next{n} {}
   };
   /* Data members of List class:  a front and back pointer */
+  int _size;
   Node *front;
   Node *back;
 
 public:
+
   // constructor
   List() {
     front = nullptr;
     back = nullptr;
+    _size=0;
   }
 
   // destructor
@@ -75,39 +79,6 @@ public:
     front = back = nullptr;
   }
 
-  /**
-     * TODO
-     *
-     * function: length
-     * desc:  returns the length of the calling list
-     *
-     * REQUIREMENTS:  this is a working implementation, but
-     *   it takes linear time.
-     *
-     *   Your job (todo):  make modifications so that this
-     *     operation becomes constant time (O(1)).
-     *
-     *   This task is different from most others in that most of
-     *       the "real" work you do to make this work
-     *	in O(1) time will be in _other_ functions which affect
-     *	the length of lists.
-     *
-     *	HINT:  you are free to add data members to the List class...
-     *	       maybe for "bookkeeping"??
-     */
-  int length() const
-  {
-    Node *p = front;
-    int n = 0;
-
-    while (p != nullptr)
-    {
-      n++;
-      p = p->next;
-    }
-
-    return n;
-  }
 
 public:
   /**
@@ -135,6 +106,31 @@ public:
     }
     std::cout << "]\n";
   }
+  /**
+     * TODO
+     *
+     * function: length
+     * desc:  returns the length of the calling list
+     *
+     * REQUIREMENTS:  this is a working implementation, but
+     *   it takes linear time.
+     *
+     *   Your job (todo):  make modifications so that this
+     *     operation becomes constant time (O(1)).
+     *
+     *   This task is different from most others in that most of
+     *       the "real" work you do to make this work
+     *	in O(1) time will be in _other_ functions which affect
+     *	the length of lists.
+     *
+     *	HINT:  you are free to add data members to the List class...
+     *	       maybe for "bookkeeping"??
+     */
+
+  int length() const
+  {
+    return _size;
+  }
 
   /**
     * function: push_front
@@ -143,6 +139,7 @@ public:
     */
   void push_front(const T &data)
   {
+    _size++;
     front = new Node(data, front);
 
     if (back == nullptr)
@@ -160,6 +157,7 @@ public:
     */
   bool pop_front(T &val)
   {
+    _size--;
     Node *tmp;
 
     if (front == nullptr)
@@ -181,6 +179,7 @@ public:
     */
   void push_back(const T &val)
   {
+    _size++;
     Node *tmp = new Node(val);
     tmp->next = nullptr;
 
@@ -352,15 +351,20 @@ public:
      *  REQUIRMENT:  Linear runtime (O(n) where n is the length
      *    of the list.)
      */
-  void print_rev() const
-  {
-    //base case
-    if(front==nullptr)
+  //Helper function
+  void _print_rev(Node *lst) const{
+    if(lst==nullptr)
       return;
     //recursion
-    printReverse(front->next);
-    //once reach end of list then print
-    printf("%d ",front->data);
+    _print_rev(lst->next);
+    //THEN print
+    printf("%d ",lst->data);
+  }
+  void print_rev() const
+  {
+    if(front==nullptr)
+      return;
+    _print_rev(front);
   }
 
   /* TODO
@@ -560,10 +564,12 @@ public:
               return;
             }
           }
-          curr_other->next = tmp;
-          curr = tmp;
-          tmp=curr->next;
         }
+        curr_other->next = tmp;
+        curr = tmp;
+        tmp=curr->next;
+        curr_other = tmp_other;
+        tmp_other = tmp_other->next;
       }
       if(other.back->data > back->data){
         back = other.back;
